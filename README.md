@@ -1,2 +1,4 @@
-# code-jam
-My solutions to Google's Code Jam programming competition.
+Google Code Jam
+==================
+
+Here are some of my solutions for Google's Code Jam programming competition.
