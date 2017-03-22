@@ -1,9 +1,10 @@
-fin = open('A-small-practice.in', 'r')
-L, D, N = fin.readline().split()
-L = int(L)
-D = int(D)
-N = int(N)
-fout = open('A-small-qr-2009.out', 'w')
+#!/usr/bin/env python
+
+import sys
+
+fin = open(sys.argv[1], 'r')
+L, D, N = map(int, fin.readline().split())
+fout = open(sys.argv[2], 'w')
 
 print(L, D, N)
 for d in range(1, D + 1):
