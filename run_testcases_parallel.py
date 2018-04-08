@@ -19,7 +19,7 @@ T = int(raw_input())
 processes = []
 for t in range(1, T + 1):
     data = int(raw_input())
-    process = mp.Process(target=solve, args=(data, t, output), )
+    process = mp.Process(target=solve, args=(data, t, output))
     processes.append(process)
 
 # Here is the parallel execution.
