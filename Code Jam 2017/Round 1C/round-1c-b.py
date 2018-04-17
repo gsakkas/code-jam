@@ -72,45 +72,25 @@ def solve(ac, aj):
         if both[i][2] > 0:
             if tt <= ctime:
                 ctime -= tt
-                if both[i][2] != both[i + 1][2]:
-                    result += 1
+                result += 1
+            elif tt <= ctime + jtime:
+                jtime -= (tt - ctime)
+                ctime = 0
+                if both[i][2] == both[i + 1][2]:
+                    result += 2
                 else:
-                    both[i + 1][0] = both[i][0]
-                    both[i][2] = 0
+                    result += 1
         else:
             if tt <= jtime:
                 jtime -= tt
-                if both[i][2] != both[i + 1][2]:
-                    result += 1
+                result += 1
+            elif tt <= ctime + jtime:
+                ctime -= (tt - jtime)
+                jtime = 0
+                if both[i][2] == both[i + 1][2]:
+                    result += 2
                 else:
-                    both[i + 1][0] = both[i][0]
-                    both[i][2] = 0
-    both = filter(lambda x: x[2] != 0, both)
-
-    for i in xrange(len(both) - 1):
-        if both[i][1] != both[i + 1][0]:
-            if both[i][2] > 0:
-                tt = both[i + 1][0] - both[i][1]
-                if tt <= ctime + jtime:
-                    jtime -= (tt - ctime)
-                    ctime = 0
-                    both[i + 1][0] = both[i][0]
-                    if both[i][2] == both[i + 1][2]:
-                        result += 2
-                    else:
-                        result += 1
-                    both[i][2] = 0
-            else:
-                tt = both[i + 1][0] - both[i][1]
-                if tt <= ctime + jtime:
-                    ctime -= (tt - jtime)
-                    jtime = 0
-                    both[i + 1][0] = both[i][0]
-                    if both[i][2] == both[i + 1][2]:
-                        result += 2
-                    else:
-                        result += 1
-                    both[i][2] = 0
+                    result += 1
     return result
 
 
