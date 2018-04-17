@@ -30,54 +30,87 @@ def solve(ac, aj):
     both = cds + jks
     both.sort()
     both.append([both[0][0] + 1440, both[0][1] + 1440, both[0][2]])
-    # print both
+
     start = both[0][0]
     both = map(lambda x: [x[0] - start, x[1] - start, x[2]], both)
-    # print both
-    # print ctime, jtime
-    result = 0
-    for i in xrange(len(both) - 1):
-        if both[i][2] > 0:
-            tt = both[i + 1][0] - both[i][1]
-            if tt <= ctime:
-                ctime -= tt
-                both[i + 1][0] = both[i][0]
-                if both[i][2] != both[i + 1][2]:
-                    result += 1
-                both[i][2] = 0
-        else:
-            tt = both[i + 1][0] - both[i][1]
-            if tt <= jtime:
-                jtime -= tt
-                both[i + 1][0] = both[i][0]
-                if both[i][2] != both[i + 1][2]:
-                    result += 1
-                both[i][2] = 0
-    both = filter(lambda x: x[2] != 0, both)
-    # print both
+
     for i in xrange(len(both) - 1):
         if both[i][2] == both[i + 1][2]:
+            tt = both[i + 1][0] - both[i][1]
+            both[i].append(tt)
+        else:
+            both[i].append(3600)
+    both[-1].append(3600)
+
+    cds = filter(lambda x: x[2] > 0, both)
+    cds.sort(key=lambda x: x[3])
+    for i in xrange(len(cds) - 1):
+        if cds[i][3] <= ctime:
+            ctime -= cds[i][3]
+            cds[i][1] += cds[i][3]
+            cds[i][3] = 0
+    jks = filter(lambda x: x[2] < 0, both)
+    jks.sort(key=lambda x: x[3])
+    for i in xrange(len(jks) - 1):
+        if jks[i][3] <= jtime:
+            jtime -= jks[i][3]
+            jks[i][1] += jks[i][3]
+            jks[i][3] = 0
+    both = cds + jks
+    both.sort()
+
+    result = 0
+    for i in xrange(len(both) - 1):
+        if both[i][2] == both[i + 1][2]:
+            if both[i][1] == both[i + 1][0]:
+                both[i + 1][0] = both[i][0]
+                both[i][2] = 0
+    both = filter(lambda x: x[2] != 0, both)
+
+    for i in xrange(len(both) - 1):
+        tt = both[i + 1][0] - both[i][1]
+        if both[i][2] > 0:
+            if tt <= ctime:
+                ctime -= tt
+                if both[i][2] != both[i + 1][2]:
+                    result += 1
+                else:
+                    both[i + 1][0] = both[i][0]
+                    both[i][2] = 0
+        else:
+            if tt <= jtime:
+                jtime -= tt
+                if both[i][2] != both[i + 1][2]:
+                    result += 1
+                else:
+                    both[i + 1][0] = both[i][0]
+                    both[i][2] = 0
+    both = filter(lambda x: x[2] != 0, both)
+
+    for i in xrange(len(both) - 1):
+        if both[i][1] != both[i + 1][0]:
             if both[i][2] > 0:
                 tt = both[i + 1][0] - both[i][1]
-                if tt <= jtime:
-                    jtime -= tt
-                    both[i][2] = 0
+                if tt <= ctime + jtime:
+                    jtime -= (tt - ctime)
+                    ctime = 0
                     both[i + 1][0] = both[i][0]
-                    result += 2
+                    if both[i][2] == both[i + 1][2]:
+                        result += 2
+                    else:
+                        result += 1
+                    both[i][2] = 0
             else:
                 tt = both[i + 1][0] - both[i][1]
-                if tt <= ctime:
-                    ctime -= tt
-                    both[i][2] = 0
+                if tt <= ctime + jtime:
+                    ctime -= (tt - jtime)
+                    jtime = 0
                     both[i + 1][0] = both[i][0]
-                    result += 2
-    both = filter(lambda x: x[2] != 0, both)
-    if len(both) > 1:
-        result += 1
-    if result % 2 == 1:
-        result += 1
-    # print both
-    # print ctime, jtime
+                    if both[i][2] == both[i + 1][2]:
+                        result += 2
+                    else:
+                        result += 1
+                    both[i][2] = 0
     return result
 
 
