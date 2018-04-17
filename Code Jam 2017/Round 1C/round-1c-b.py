@@ -13,26 +13,14 @@ def read_many(a):
 def solve(ac, aj):
     cds = sorted(read_many(ac))
     cds = map(lambda x: x + [1], cds)
-    for i in xrange(1, ac):
-        if cds[i][0] == cds[i - 1][1]:
-            cds[i - 1][1] = cds[i][1]
-            cds[i][2] = 0
-    cds = filter(lambda x: x[2] > 0, cds)
     ctime = reduce(lambda x, y: x - y[1] + y[0], cds, 720)
     jks = sorted(read_many(aj))
     jks = map(lambda x: x + [-1], jks)
-    for i in xrange(1, aj):
-        if jks[i][0] == jks[i - 1][1]:
-            jks[i - 1][1] = jks[i][1]
-            jks[i][2] = 0
-    jks = filter(lambda x: x[2] < 0, jks)
     jtime = reduce(lambda x, y: x - y[1] + y[0], jks, 720)
+
     both = cds + jks
     both.sort()
     both.append([both[0][0] + 1440, both[0][1] + 1440, both[0][2]])
-
-    start = both[0][0]
-    both = map(lambda x: [x[0] - start, x[1] - start, x[2]], both)
 
     for i in xrange(len(both) - 1):
         if both[i][2] == both[i + 1][2]:
