@@ -1,20 +1,26 @@
 #!/usr/bin/env python
 
-import sys
 
-fin = open(sys.argv[1], 'r')
-L, D, N = map(int, fin.readline().split())
-fout = open(sys.argv[2], 'w')
+def read_int():
+    return int(raw_input())
 
-print(L, D, N)
-for d in range(1, D + 1):
-    line = fin.readline().strip()
-    print(line)
 
-for n in range(1, N + 1):
-    line = fin.readline().strip()
-    print(line)
-    fout.write('Case #{0}: {1}\n'.format(n, n / 2))
+def read_many_ints():
+    return map(int, raw_input().split())
 
-fin.close()
-fout.close()
+
+def read_many(r, c):
+    return [read_many_ints() for _ in xrange(r)]
+
+
+def solve(r, c):
+    int_2d_array = read_many(r, c)
+    pass
+
+
+if __name__ == "__main__":
+    t = read_int()
+    for test in xrange(1, t + 1):
+        rows, columns = read_many_ints()
+        print "Case #{}: {}".format(test, solve(rows, columns))
+    exit(0)
