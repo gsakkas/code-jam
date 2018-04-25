@@ -17,6 +17,15 @@ def choose(x):
         return x[1]
 
 
+def is_ok(c1, c2, j1, j2):
+    if c1 > c2:
+        return True
+    elif c1 == c2 and j1 > j2:
+        return True
+    else:
+        return False
+
+
 def solve():
     c, j = read_many()
     if filter(lambda x: x[0] != x[1] if x[0] != '?' and x[1] != '?' else False,
@@ -44,7 +53,8 @@ def solve():
                 ct = c[:(i + 1)]
                 ct += ''.join(map(lambda x: '9' if x ==
                                   '?' else x, c[(i + 1):]))
-            if abs(int(ct) - int(jt)) <= diff:
+            score = abs(int(ct) - int(jt))
+            if score < diff or (score == diff and is_ok(cf, ct, jf, jt)):
                 diff = abs(int(ct) - int(jt))
                 cf = ct
                 jf = jt
@@ -57,7 +67,8 @@ def solve():
                 jt = j[:(i + 1)]
                 jt += ''.join(map(lambda x: '9' if x ==
                                   '?' else x, j[(i + 1):]))
-                if abs(int(ct) - int(jt)) <= diff:
+                score = abs(int(ct) - int(jt))
+                if score < diff or (score == diff and is_ok(cf, ct, jf, jt)):
                     diff = abs(int(ct) - int(jt))
                     cf = ct
                     jf = jt
@@ -68,7 +79,8 @@ def solve():
                 jt = j[:(i + 1)]
                 jt += ''.join(map(lambda x: '0' if x ==
                                   '?' else x, j[(i + 1):]))
-                if abs(int(ct) - int(jt)) <= diff:
+                score = abs(int(ct) - int(jt))
+                if score < diff or (score == diff and is_ok(cf, ct, jf, jt)):
                     diff = abs(int(ct) - int(jt))
                     cf = ct
                     jf = jt
@@ -81,7 +93,8 @@ def solve():
                 ct = c[:(i + 1)]
                 ct += ''.join(map(lambda x: '9' if x ==
                                   '?' else x, c[(i + 1):]))
-                if abs(int(ct) - int(jt)) <= diff:
+                score = abs(int(ct) - int(jt))
+                if score < diff or (score == diff and is_ok(cf, ct, jf, jt)):
                     diff = abs(int(ct) - int(jt))
                     cf = ct
                     jf = jt
@@ -92,7 +105,8 @@ def solve():
                 ct = c[:(i + 1)]
                 ct += ''.join(map(lambda x: '0' if x ==
                                   '?' else x, c[(i + 1):]))
-                if abs(int(ct) - int(jt)) <= diff:
+                score = abs(int(ct) - int(jt))
+                if score < diff or (score == diff and is_ok(cf, ct, jf, jt)):
                     diff = abs(int(ct) - int(jt))
                     cf = ct
                     jf = jt
@@ -102,7 +116,8 @@ def solve():
             ct += ''.join(map(lambda x: '9' if x == '?' else x, c[(i + 1):]))
             jt = j[:i] + '1'
             jt += ''.join(map(lambda x: '0' if x == '?' else x, j[(i + 1):]))
-            if abs(int(ct) - int(jt)) <= diff:
+            score = abs(int(ct) - int(jt))
+            if score < diff or (score == diff and is_ok(cf, ct, jf, jt)):
                 diff = abs(int(ct) - int(jt))
                 cf = ct
                 jf = jt
@@ -110,7 +125,8 @@ def solve():
             ct += ''.join(map(lambda x: '0' if x == '?' else x, c[(i + 1):]))
             jt = j[:i] + '0'
             jt += ''.join(map(lambda x: '9' if x == '?' else x, j[(i + 1):]))
-            if abs(int(ct) - int(jt)) <= diff:
+            score = abs(int(ct) - int(jt))
+            if score < diff or (score == diff and is_ok(cf, ct, jf, jt)):
                 diff = abs(int(ct) - int(jt))
                 cf = ct
                 jf = jt
