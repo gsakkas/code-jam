@@ -1,7 +1,7 @@
-fin = open('A-large.in', 'r')
+fin = open('A-small-practice.in', 'r')
 T = fin.readline().strip()
 T = int(T)
-fout = open('A-large-1b.out', 'w')
+fout = open('A-small-practice.out', 'w')
 
 nums = ["ZERO", "ONE", "TWO", "THREE", "FOUR",
         "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"]
