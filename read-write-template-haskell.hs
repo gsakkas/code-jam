@@ -14,13 +14,17 @@ solve d _ = 10
 main =
   do all <- BS.getContents
      let Just (t, r1) = readInt all
-     putStrLn $ enum 1 "" $ solveAll t r1
+     putStr $ enum 1 "" $ solveAll t r1
   where enum _ acc [] = acc
         enum n acc (p:ps) =
           enum (n+1) (acc ++ "Case #" ++ (show n) ++ ": " ++ (f p) ++ "\n") ps
         f n = if n < 0 then "IMPOSSIBLE" else show n
         readInt s = BSC.readInt (BSC.dropWhile isSpace s)
         readMany s = BSC.span isLetter (BSC.dropWhile isSpace s)
+        readManyInts l s = case readInt s of
+            Just (x, r) -> let (xs, rest) = readManyInts (l-1) r
+                           in  (x:xs, rest)
+            Nothing     -> ([], (BSC.dropWhile isSpace s))
         readFloat s = reads s
         solveAll t s
           | t == 1    = [solve d p']
