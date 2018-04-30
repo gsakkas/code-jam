@@ -11,27 +11,30 @@ def read_many_ints():
 
 def solve(n, langs):
     ls = read_many_ints()
-    maxx = 0
     remaining = n - sum(ls)
     vals = map(lambda x: 100.0 * x / n, range(max(ls) + remaining + 1))
     rvals = map(lambda x: round(x), vals)
-    sofar = sum(map(lambda x: rvals[x], ls))
+    nextr = []
+    nn = len(rvals)
+    for i in xrange(len(rvals) - 1, -1, -1):
+        if rvals[i] > vals[i]:
+            nn = i
+        nextr.insert(0, nn)
+    sofar = reduce(lambda x, y: x + rvals[y], ls, 0)
     quant = rvals[1]
     maxx = sofar + quant * remaining
-    for i in xrange(2, remaining + 1):
-        if rvals[i] > vals[i]:
-            newm = sofar + rvals[i] * (remaining / i) + \
-                quant * (remaining % i)
-            if newm > maxx:
-                maxx = newm
-                break
-    needed = []
-    for i, ll in enumerate(ls):
-        if rvals[ll] < vals[ll]:
-            for j in xrange(1, remaining + 1):
-                if rvals[j + ll] > vals[j + ll]:
-                    needed.append((j, i))
-                    break
+    i = 1
+    while i <= remaining and rvals[i] <= vals[i]:
+        i += 1
+    mx_quant = rvals[i]
+    mx_i = i
+    newm = sofar + mx_quant * (remaining / mx_i) + quant * (remaining % mx_i)
+    if newm > maxx:
+        maxx = newm
+
+    temp = filter(lambda x: rvals[x[1]] < vals[x[1]], enumerate(ls))
+    temp = map(lambda x: (nextr[x[1]] - x[1], x[0]), temp)
+    needed = filter(lambda x: x[0] <= remaining, temp)
     needed.sort(key=lambda x: x[0])
     for need, i in needed:
         if remaining - need >= 0:
@@ -42,12 +45,10 @@ def solve(n, langs):
                 if sofar > maxx:
                     maxx = sofar
             else:
-                for j in xrange(1, remaining + 1):
-                    newm = sofar + rvals[j] * (remaining / j) + \
-                        quant * (remaining % j)
-                    if newm > maxx:
-                        maxx = newm
-                        break
+                newm = sofar + mx_quant * (remaining / mx_i) + \
+                    quant * (remaining % mx_i)
+                if newm > maxx:
+                    maxx = newm
         else:
             break
     return int(maxx)
