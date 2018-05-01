@@ -13,43 +13,57 @@ rnd x y | x * 100 `mod` y * 2 >= y = x * 100 `div` y + 1
         | otherwise                = x * 100 `div` y
 
 
-extras :: Int -> Int -> Int -> [Int] -> [Int]
-extras cnt n r acc
-  | cnt < 1 = acc
-  | rnd cnt n > cnt * 100 `div` n = extras (cnt - 1) n r ((mx):acc)
-  | otherwise = extras (cnt - 1) n r acc
-    where mx = (rnd cnt n) * (r `div` cnt) + (rnd 1 n) * (r `mod` cnt)
+extras :: Int -> Int -> Int -> Int
+extras cnt n r = (rnd cnt n) * (r `div` cnt) + (rnd 1 n) * (r `mod` cnt)
 
 
-need :: [Int] -> Int -> Int -> [(Int, Int)] -> [(Int, Int)]
-need [] _ _ acc = acc
-need (l:ls) n r acc 
-  | rnd l n < l * 100 `div` n + 1 = need ls n r ((find_next 1):acc)
-  | otherwise = need ls n r acc
+maxq :: Int -> Int -> Int -> Int
+maxq cnt n r
+  | cnt > r = 1
+  | rnd cnt n > cnt * 100 `div` n = cnt
+  | otherwise = maxq (cnt + 1) n r
+
+
+nextr :: Int -> Int -> Int -> [Int] -> [Int]
+nextr cnt n ll acc
+  | cnt < 0 = acc
+  | rnd cnt n > cnt * 100 `div` n = nextr (cnt - 1) n cnt (cnt:acc)
+  | otherwise = nextr (cnt - 1) n ll (ll:acc)
+
+
+need :: [Int] -> [Int] -> Int -> Int -> [(Int, Int)] -> [(Int, Int)]
+need [] _ _ _ acc = acc
+need (l:ls) nxt n r acc
+  | rnd l n < l * 100 `div` n + 1 = need ls nxt n r ((find_next l):acc)
+  | otherwise = need ls nxt n r acc
     where find_next cnt
             | cnt > r = (n + 1, 0)
             | rnd (l + cnt) n > (l + cnt) * 100 `div` n = (cnt, (rnd (l + cnt) n) - (rnd l n))
             | otherwise = find_next (cnt + 1)
 
 
-find_max :: [(Int, Int)] -> Int -> Int -> Int -> [Int] -> [Int]
-find_max [] _ _ _ acc = acc
-find_max (n:ns) n' r sm acc
-  | r - need >= 0 = find_max ns n' (r-need) (sm + pc) (least:acc)
+find_max :: [(Int, Int)] -> Int -> Int -> Int -> Int -> [Int] -> [Int]
+find_max [] _ _ _ _ acc = acc
+find_max (n:ns) max_quant n' r sm acc
+  | r - need >= 0 = find_max ns max_quant n' (r-need) (sm + pc) (least:acc)
   | otherwise     = acc
     where need = fst n
           pc = snd n
-          more = maximum $ extras (r - need) n' (r - need) [0]
+          more = extras max_quant n' (r - need)
           least = (max more ((rnd 1 n') * (r - need))) + sm + pc
 
 
 solve :: Int -> [Int] -> Int
-solve n ls = sofar + max least (maximum $ find_max needed n remaining 0 [0])
-  where sofar = sum $ map (\x -> rnd x n) ls
-        remaining = n - sum ls
-        all_new = maximum $ extras remaining n remaining [0]
-        least = max all_new ((rnd 1 n) * remaining)
-        needed = sortOn fst $ need ls n remaining []
+solve n ls
+  | rnd 1 n > 100 `div` n = sofar + least
+  | otherwise = sofar + max least (maximum $ find_max needed max_quant n remaining 0 [0])
+    where sofar = sum $ map (\x -> rnd x n) ls
+          remaining = n - sum ls
+          max_quant = maxq 1 n remaining
+          nn = (maximum ls) + remaining + 1
+          nxt = nextr (nn - 1) n nn []
+          least = max (extras max_quant n remaining) ((rnd 1 n) * remaining)
+          needed = sortOn fst $ need ls nxt n remaining []
 
 
 main =
