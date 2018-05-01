@@ -9,44 +9,53 @@ def read_many_ints():
     return map(int, raw_input().split())
 
 
+def remainder(x):
+    return x - int(x)
+
+
 def solve(n, langs):
     ls = read_many_ints()
+
+    quant = 100.0 / n
+    rquant = round(quant)
+    if remainder(quant) == 0:
+        return 100
+
+    sofar = sum([round(100.0 * x / n) for x in ls])
     remaining = n - sum(ls)
-    vals = map(lambda x: 100.0 * x / n, range(max(ls) + remaining + 1))
-    rvals = map(lambda x: round(x), vals)
+    if remainder(quant) >= 0.5:
+        return int(sofar + rquant * remaining)
+
     nextr = []
-    nn = len(rvals)
-    for i in xrange(len(rvals) - 1, -1, -1):
-        if rvals[i] > vals[i]:
+    nn = max(ls) + remaining + 1
+    lenn = nn - 1
+    for i in xrange(lenn, -1, -1):
+        if remainder(100.0 * i / n) >= 0.5:
             nn = i
         nextr.insert(0, nn)
-    sofar = reduce(lambda x, y: x + rvals[y], ls, 0)
-    quant = rvals[1]
-    maxx = sofar + quant * remaining
+
+    maxx = sofar + rquant * remaining
     i = 1
-    while i <= remaining and rvals[i] <= vals[i]:
+    while i <= remaining and remainder(100.0 * i / n) < 0.5:
         i += 1
-    mx_quant = rvals[i]
+    mx_quant = round(100.0 * i / n)
     mx_i = i
-    newm = sofar + mx_quant * (remaining / mx_i) + quant * (remaining % mx_i)
+    newm = sofar + mx_quant * (remaining / mx_i) + rquant * (remaining % mx_i)
     if newm > maxx:
         maxx = newm
 
-    temp = filter(lambda x: rvals[x[1]] < vals[x[1]], enumerate(ls))
-    temp = map(lambda x: (nextr[x[1]] - x[1], x[0]), temp)
-    needed = filter(lambda x: x[0] <= remaining, temp)
-    needed.sort(key=lambda x: x[0])
-    for need, i in needed:
+    ls.sort(key=lambda x: remainder(100.0 * x / n), reverse=True)
+    for l in ls:
+        need = nextr[l] - l
         if remaining - need >= 0:
             remaining -= need
-            sofar -= rvals[ls[i]]
-            sofar += rvals[ls[i] + need]
+            sofar += round(100.0 * nextr[l] / n) - round(100.0 * l / n)
             if remaining == 0:
                 if sofar > maxx:
                     maxx = sofar
             else:
                 newm = sofar + mx_quant * (remaining / mx_i) + \
-                    quant * (remaining % mx_i)
+                    rquant * (remaining % mx_i)
                 if newm > maxx:
                     maxx = newm
         else:
