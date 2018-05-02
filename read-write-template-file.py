@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-
 def read_int():
     return int(raw_input())
 
