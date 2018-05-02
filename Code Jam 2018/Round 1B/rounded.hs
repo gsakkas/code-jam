@@ -37,10 +37,9 @@ need (l:ls) nxt n r acc
   | rnd l n < l * 100 `div` n + 1 = need ls nxt n r ((find_next l):acc)
   | otherwise = need ls nxt n r acc
     where find_next cnt
-            | cnt > r = (n + 1, 0)
-            | rnd (l + cnt) n > (l + cnt) * 100 `div` n = (cnt, (rnd (l + cnt) n) - (rnd l n))
-            | otherwise = find_next (cnt + 1)
-
+            | ll - l > r = (n + 1, 0)
+            | otherwise = (ll - l, (rnd ll n) - (rnd l n))
+              where ll = nxt !! cnt
 
 find_max :: [(Int, Int)] -> Int -> Int -> Int -> Int -> [Int] -> [Int]
 find_max [] _ _ _ _ acc = acc
