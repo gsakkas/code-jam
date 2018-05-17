@@ -2,7 +2,7 @@
  
 module Main where
 
-import Data.Char (isSpace, isLetter)
+import Data.Char (isSpace)
 import Data.List (sortOn)
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
